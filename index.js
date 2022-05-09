@@ -39,6 +39,15 @@ async function run() {
             res.send(item);
         })
 
+        //my items
+        app.get('/item', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const cursor = itemCollection.find(query);
+            const items = await cursor.toArray();
+            res.send(items);
+        })
+
         //POST/ add new item
         app.post('/item', async (req, res) => {
             const newItem = req.body;
@@ -55,6 +64,27 @@ async function run() {
             const updatedDoc = {
                 $set: {
                     quantity: updatedItemQuantity.quantity,
+                }
+            };
+            const result = await itemCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
+
+        //Update a item
+        app.put('/item/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedItem = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    name: updatedItem.name,
+                    price: updatedItem.price,
+                    quantity: updatedItem.quantity,
+                    sold: updatedItem.sold,
+                    supplierName: updatedItem.supplierName,
+                    description: updatedItem.description,
+                    img: updatedItem.img
                 }
             };
             const result = await itemCollection.updateOne(filter, updatedDoc, options);
