@@ -39,6 +39,13 @@ async function run() {
             res.send(item);
         })
 
+        //POST/ add new item
+        app.post('/item', async (req, res) => {
+            const newItem = req.body;
+            const result = await itemCollection.insertOne(newItem);
+            res.send(result);
+        })
+
         //Update a item(quantity)
         app.put('/item/:id', async (req, res) => {
             const id = req.params.id;
